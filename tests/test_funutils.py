@@ -87,8 +87,25 @@ class TestFunutils(TestCase):
         result = tapper("abc")
 
         self.assertEqual(result, "abc")
-        self.assertEqual(side_effects[0], "abc")
-        self.assertEqual(len(side_effects), 1)
+        self.assertEqual(side_effects, ["abc"])
+
+    def test_tap_each_with_list(self):
+        side_effects = []
+        tapper = fun.tap_each(lambda x: side_effects.append(x + 1))
+
+        result = tapper([1, 2, 3])
+
+        self.assertEqual(list(result), [1, 2, 3])
+        self.assertEqual(side_effects, [2, 3, 4])
+
+    def test_tap_each_with_string(self):
+        side_effects = []
+        tapper = fun.tap_each(lambda x: side_effects.append(x))
+
+        result = tapper("abc")
+
+        self.assertEqual(result, "abc")
+        self.assertEqual(side_effects, ["abc"])
 
     def test_chain(self):
         add_one = fun.map(lambda x: x + "1")
@@ -142,3 +159,11 @@ class TestFunutils(TestCase):
             ["a", "b", "c", "d"],
             ["A1", "B1", "C1", "D1"]
         ])
+
+        result = fun.chain(
+            ["a", "b", "c", "d"],
+            *big_transform,
+            fun.reduce(lambda acc, x: acc + x),
+        )
+        self.assertEqual(result, "A1B1C1D1")
+
