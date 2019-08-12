@@ -54,6 +54,42 @@ class TestFunutils(TestCase):
 
         self.assertEqual(list(result), [(2, "a"), (1, "b"), (3, "c")])
 
+    def test_tap_with_list(self):
+        side_effects = []
+        tapper = fun.tap(lambda x: side_effects.append(x))
+
+        result = tapper([1, 2, 3])
+
+        self.assertEqual(result, [1, 2, 3])
+        self.assertEqual(side_effects[0].__str__(), "[1, 2, 3]")
+        self.assertEqual(len(side_effects), 1)
+
+    def test_tap_with_iterable(self):
+        """In a chain, it's likely we'll receive lists as iterables.
+        
+        This is good for performance but bad for many tapping functions,
+        most notably `print`. So, we convert it to a list.
+        """
+        side_effects = []
+        tapper = fun.tap(lambda x: side_effects.append(x))
+
+        result = tapper(iter([1, 2, 3]))
+
+        self.assertEqual(result, [1, 2, 3])
+        self.assertEqual(side_effects[0].__str__(), "[1, 2, 3]")
+        self.assertEqual(len(side_effects), 1)
+
+    def test_tap_with_string(self):
+        """strings are iterable, but we don't want to convert them to a list when tapping them"""
+        side_effects = []
+        tapper = fun.tap(lambda x: side_effects.append(x))
+
+        result = tapper("abc")
+
+        self.assertEqual(result, "abc")
+        self.assertEqual(side_effects[0], "abc")
+        self.assertEqual(len(side_effects), 1)
+
     def test_chain(self):
         add_one = fun.map(lambda x: x + "1")
         upper = fun.map(str.upper)
@@ -91,3 +127,18 @@ class TestFunutils(TestCase):
         )
         self.assertEqual(result, ["D1", "C1", "B1", "A1"])
 
+        side_effects = []
+        save_value = fun.tap(side_effects.append)
+        result = fun.chain(
+            ["a", "b", "c", "d"],
+            save_value, 
+            *big_transform,
+            save_value, 
+            fun.sort(reverse=True),
+            list
+        )
+        self.assertEqual(result, ["D1", "C1", "B1", "A1"])
+        self.assertEqual(side_effects, [
+            ["a", "b", "c", "d"],
+            ["A1", "B1", "C1", "D1"]
+        ])

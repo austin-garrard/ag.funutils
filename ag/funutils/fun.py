@@ -1,4 +1,5 @@
 import functools
+from collections.abc import Iterable
 
 def chain(initial, *transforms):
     return functools.reduce(
@@ -23,3 +24,14 @@ def filter(condition):
 
 def sort(key = None, reverse = False):
     return lambda iterable: sorted(iterable, key=key, reverse=reverse)
+
+def tap(fn):
+    """Intended for debugging purposes, usually with `print`. Using this
+    function will likely degrade the performance of your code"""
+    def tapper(value):
+        if isinstance(value, Iterable) and not isinstance(value, str):
+            value = list(value)
+        fn(value)
+        return value
+
+    return tapper
