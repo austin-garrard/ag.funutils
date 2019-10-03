@@ -43,6 +43,27 @@ fun.chain(
     *big_transform,
     fun.reduce(lambda acc, x: acc + x)
 ) # => "A1B1C1D1"
+
+# Values that are tuples will be spread into the transformations,
+# which lets you work with dicts.
+
+data = {
+    'beep': 1,
+    'boop': 2,
+    'buup': 3,
+}
+
+add_one = fun.map(lambda k, v: (k, v + 1))
+evens = fun.filter(lambda k, v: v % 2 == 0)
+beep_buup = fun.reduce(lambda acc, k, v: f'{acc}{k}{v}', '')
+
+result = fun.chain(
+    data.items(),
+    add_one,
+    evens,
+    add_one,
+    beep_buup
+) # => 'beep3buup5'
 ```
 
 # Reference

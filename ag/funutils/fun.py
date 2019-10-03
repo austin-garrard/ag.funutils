@@ -1,15 +1,9 @@
 import functools
 from collections.abc import Iterable
 
-def _apply_transform(prev_result, next_transform):
-    if isinstance(prev_result, dict):
-        return dict(next_transform(prev_result.items()))
-    else:
-        return next_transform(prev_result)
-
 def chain(initial, *transforms):
     return functools.reduce(
-        _apply_transform,
+        lambda prev_result, next_transform: next_transform(prev_result),
         transforms,
         initial
     )

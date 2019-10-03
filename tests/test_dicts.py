@@ -73,17 +73,38 @@ class TestDicts(TestCase):
 
     def test_chain(self):
         result = fun.chain(
-            self.data,
+            self.data.items(),
             fun.map(TestDicts.move_north),
             fun.tap_each(self.log_y_pos),
-            fun.filter(TestDicts.above_equator)
+            fun.filter(TestDicts.above_equator),
+            dict
         )
 
-        self.assertTrue(self.log, ("rover1", 2) in self.log)
-        self.assertTrue(self.log, ("rover2", 4) in self.log)
         self.assertEqual(result, {
             "rover2": {
                 "pos": (2, 4),
                 "dir": "W"
             }
         })
+    
+    def test_boop(self):
+        data = {
+            'beep': 1,
+            'boop': 2,
+            'buup': 3,
+        }
+
+        add_one = fun.map(lambda k, v: (k, v + 1))
+        evens = fun.filter(lambda k, v: v % 2 == 0)
+        beep_buup = fun.reduce(lambda acc, k, v: f'{acc}{k}{v}', '')
+
+        result = fun.chain(
+            data.items(),
+            add_one,
+            evens,
+            add_one,
+            beep_buup
+        )
+
+        self.assertEqual(result, 'beep3buup5')
+

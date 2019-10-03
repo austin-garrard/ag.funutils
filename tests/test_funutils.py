@@ -12,24 +12,45 @@ class TestFunutils(TestCase):
 
         self.assertEqual(list(result), [2, 3, 4])
 
-    def test_filter(self):
-        mapper = fun.filter(lambda x: x > 2)
+    def test_map_with_tuples(self):
+        mapper = fun.map(lambda k, v: (k, v+1))
 
-        result = mapper([1, 2, 3, 4])
+        result = mapper([('one', 1), ('two', 2)])
+
+        self.assertEqual(list(result), [('one', 2), ('two', 3)])
+
+    def test_filter(self):
+        filterer = fun.filter(lambda x: x > 2)
+
+        result = filterer([1, 2, 3, 4])
 
         self.assertEqual(list(result), [3, 4])
 
-    def test_reduce(self):
-        mapper = fun.reduce(lambda acc, x: acc + x)
+    def test_filter_with_tuples(self):
+        filterer = fun.filter(lambda k, v: k is 'two' and v is 2)
 
-        result = mapper([1, 2, 3])
+        result = filterer([('one', 1), ('two', 2)])
+
+        self.assertEqual(list(result), [('two', 2)])
+
+    def test_reduce(self):
+        reducer = fun.reduce(lambda acc, x: acc + x)
+
+        result = reducer([1, 2, 3])
 
         self.assertEqual(result, 6)
 
     def test_reduce_with_initial_value(self):
-        mapper = fun.reduce(lambda acc, x: acc + x, 4)
+        reducer = fun.reduce(lambda acc, x: acc + x, 4)
 
-        result = mapper([1, 2, 3])
+        result = reducer([1, 2, 3])
+
+        self.assertEqual(result, 10)
+
+    def test_reduce_with_tuples(self):
+        reducer = fun.reduce(lambda acc, k, v: acc + k + v, 0)
+
+        result = reducer([(1, 2), (3, 4)])
 
         self.assertEqual(result, 10)
 
@@ -40,12 +61,26 @@ class TestFunutils(TestCase):
 
         self.assertEqual(list(result), [1, 2, 3, 4])
 
+    def test_sort_with_defaults_and_tuples(self):
+        sorter = fun.sort()
+
+        result = sorter([('key3', 1), ('key1', 2), ('key2', 3)])
+
+        self.assertEqual(list(result), [('key1', 2), ('key2', 3), ('key3', 1)])
+
     def test_sort_in_reverse(self):
         sorter = fun.sort(reverse=True)
 
         result = sorter([2, 4, 3, 1])
 
         self.assertEqual(list(result), [4, 3, 2, 1])
+
+    def test_sort_in_reverse_with_tuples(self):
+        sorter = fun.sort(reverse=True)
+
+        result = sorter([('key3', 1), ('key1', 2), ('key2', 3)])
+
+        self.assertEqual(list(result), [('key3', 1), ('key2', 3), ('key1', 2)])
 
     def test_sort_with_key(self):
         sorter = fun.sort(lambda x: x[1])
