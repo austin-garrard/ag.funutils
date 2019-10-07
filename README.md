@@ -74,8 +74,18 @@ result = fun.chain(
 - `ag.funutils.filter(condition)`:
   - returns a function which takes an iterable and returns an iterable with only items matching the condition
 - `ag.funutils.sort(key=None, reverse=False)`:
-  - returns a function which takes an iterable and return an iterable sorted according to the `key` function. Compares items directly by default.
+  - returns a function which takes an iterable and return an iterable sorted according to the value returned by the `key` function. Compares items directly by default.
 - `ag.funutils.reduce(transform, initial=None)`:
   - returns a function which takes an iterable and reduces it to a single value. If no `initial` value is provided, the first item is used as the initial value.
 - `ag.funutils.tap(fn)`:
   - returns a function which takes a single argument, passes it to `fn`, and returns it. Intended for debugging purposes, in particular: `ag.funutils.tap(print)`.
+
+# Development
+
+Requires pipenv and python 3.7.
+
+```bash
+$ ./scripts/setup.sh
+$ ./scripts/test.sh
+```
+
