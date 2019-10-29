@@ -9,7 +9,7 @@ Each operator will take a transformation and return a function that applies that
 Also see the tests.
 
 ```python
-import ag.funutils as fun
+from ag.funutils import fun
 
 add_one = fun.map(lambda x: x + "1")
 upper = fun.map(str.upper)

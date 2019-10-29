@@ -1,7 +1,7 @@
 from unittest import TestCase
 import functools
 
-import ag.funutils as fun
+from ag.funutils import fun
 
 class TestFunutils(TestCase):
 

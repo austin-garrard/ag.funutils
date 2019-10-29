@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import ag.funutils as fun
+from ag.funutils import fun
 
 class TestDicts(TestCase):
     def setUp(self):
