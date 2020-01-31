@@ -27,7 +27,7 @@ class TestFunutils(TestCase):
         self.assertEqual(list(result), [3, 4])
 
     def test_filter_with_tuples(self):
-        filterer = fun.filter(lambda k, v: k is 'two' and v is 2)
+        filterer = fun.filter(lambda k, v: k == 'two' and v == 2)
 
         result = filterer([('one', 1), ('two', 2)])
 
